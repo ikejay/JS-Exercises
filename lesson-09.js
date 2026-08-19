@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 // Lesson 09 exercise: The DOM and forms
 // In your exercise repository, create a branch named `lesson-09-exercise` and switch to it.
@@ -10,13 +10,18 @@
 // Log one sentence to the console, then log `document.title`, and confirm that both appear in
 // the DevTools Console rather than in a terminal. In a comment, state what the `defer`
 // attribute prevented.
-
+console.log("Hello, World!");
+console.log(document.title);
+// The `defer` attribute prevented the script from running before the HTML document was fully parsed,
+// ensuring that the DOM elements are available when the script executes.
 
 // TODO: Part two.
 // Select the page's `h1` with `querySelector` and replace its `textContent` with a label name
 // of your choosing. Select the tagline by its class and change its text, then add the provided
 // highlight class to it through `classList`.
-
+document.querySelector("h1").textContent = "My Custom Label";
+document.querySelector(".tagline").textContent = "This is my custom tagline.";
+document.querySelector(".tagline").classList.add("highlight");
 
 // TODO: Part three.
 // The file provides the artists as an array of objects. Loop over it, create an `article`
@@ -31,20 +36,45 @@ const artists = [
   { name: "Asake", genre: "Afrobeats", total: "14:08" },
   { name: "Miyagi and Andy Panda", genre: "Hip-hop", total: "16:21" },
   { name: "Johnny Cash", genre: "Country", total: "15:40" },
+  { name: "New Artist", genre: "Pop", total: "10:00" },
 ];
 
+function createArtistCard(artist) {
+  const article = document.createElement("article");
+  const h3 = document.createElement("h3");
+  const p = document.createElement("p");
+
+  h3.textContent = artist.name;
+  p.textContent = `${artist.genre} - Total Runtime: ${artist.total}`;
+
+  article.appendChild(h3);
+  article.appendChild(p);
+  document.querySelector(".cards").appendChild(article);
+}
+
+
+for (const artist of artists) {
+  createArtistCard(artist);
+}
 
 // TODO: Part four.
 // Add a sixth artist object of your own invention to the array and reload. Confirm that the
 // sixth card exists, and state in a comment what you did not have to change, compared with the
 // five hand-copied cards this course opened on.
 
+// I did not have to change the loop or the card creation logic; it automatically handled the
+// new artist without any modifications.
 
 // TODO: Part five.
 // The page provides a button with the shuffle class and an element with the featured class. On
 // click, pick a random artist using the random recipe with `Math.floor`, and write a featured
 // sentence into the featured element with a template literal.
-
+document.querySelector(".shuffle").addEventListener("click", () => {
+  const randomIndex = Math.floor(Math.random() * artists.length);
+  const randomArtist = artists[randomIndex];
+  document.querySelector(".featured").textContent =
+    `Featured Artist: ${randomArtist.name} - ${randomArtist.genre}`;
+});
 
 // TODO: Part six.
 // The page provides a form with the signup class and a text input with the artist-name id. On
@@ -55,7 +85,19 @@ const artists = [
 // work. As a stretch, clear the input by assigning it an empty string after each successful
 // addition.
 
+document.querySelector(".signup").addEventListener("submit", (event) => {
+  event.preventDefault();
+  const artistNameInput = document.getElementById("artist-name");
+  const artistName = artistNameInput.value.trim();
 
+  if (artistName) { 
+    const newArtist = { name: artistName, genre: "Unknown", total: "0:00" };
+    artists.push(newArtist);
+    createArtistCard(newArtist);
+    artistNameInput.value = ""; 
+  }
+  // The falsy value that makes the check work is an empty string, which evaluates to false in a boolean context.
+});
 // TODO: Save deliberately, commit with a clear message, push the branch, and open a pull request
 // into main. This is the final exercise of the course, and the reviewed merge closes it.
 // TODO: Submit the link to the pull request for review.
